@@ -1,0 +1,27 @@
+[project]
+name = "datasheet-downloader"
+version = "0.1.0"
+description = "A Python package to search and download electronic component datasheets by MPN"
+authors = [
+    {name = "Yange",email = "posterscofield@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "playwright>=1.40.0",
+    "beautifulsoup4>=4.12.0",
+    "requests>=2.31.0",
+    "tqdm>=4.66.0",
+    "pandas>=2.0.0",
+    "pymupdf>=1.22.0",  # Optional - for PDF validation
+]
+
+[tool.poetry]
+packages = [{include = "datasheet_downloader", from = "src"}]
+
+[tool.poetry.scripts]
+datasheet-downloader = "datasheet_downloader:cli_main"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

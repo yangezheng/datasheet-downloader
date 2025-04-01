@@ -1,0 +1,19 @@
+.DS_Store
+debug_screenshots/*
+debug_logs/*
+datasheet_download.log
+datasheets/*
+
+
+# pycache
+__pycache__/*
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pywz
+*.pywz
+*.pywz
+*.pywz
+*.pywz
