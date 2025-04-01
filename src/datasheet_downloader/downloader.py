@@ -393,7 +393,7 @@ class DatasheetDownloader:
             ]
             
             # Check title page and metadata for exclusionary terms
-            for i in range(min(3, page_count)):
+            for i in range(min(5, page_count)):
                 page_text = pdf[i].get_text().lower()
                 
                 # If exclusionary terms found in first few pages, reject the PDF
@@ -843,6 +843,7 @@ class DatasheetDownloader:
         Returns:
             List of dictionaries containing datasheet information
         """
+        logger.info(f"------------------------------{mpn}------------------------------")
         logger.info(f"Searching direct sources for: {mpn}")
         results = []
         
