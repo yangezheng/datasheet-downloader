@@ -18,3 +18,6 @@ __pycache__/*
 *.pywz
 *.pywz
 tests/data/wrong_mpns.txt
+
+# Ignore distribution files
+dist/
