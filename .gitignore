@@ -21,3 +21,4 @@ tests/data/wrong_mpns.txt
 
 # Ignore distribution files
 dist/
+.env
