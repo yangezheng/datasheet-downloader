@@ -4,7 +4,7 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Poetry](https://img.shields.io/badge/packaging-poetry-cyan.svg)](https://python-poetry.org/)
 
-A powerful tool for automatically searching and downloading electronic component datasheets using Manufacturer Part Numbers (MPNs).
+A powerful tool for automatically searching and downloading electronic component datasheets using Manufacturer Part Numbers (MPNs) and uploading them to Azure Blob Storage with PostgreSQL database integration.
 
 ## Features
 
@@ -99,6 +99,100 @@ Then run:
 
 ```bash
 poetry run datasheet-downloader -f data/mpns.txt -o ./datasheets/
+```
+
+## Azure Storage Integration
+
+The Datasheet Downloader includes functionality to upload datasheets to Azure Blob Storage and store their paths in an Azure PostgreSQL database.
+
+### Prerequisites
+
+- Azure account with an active subscription
+- Azure Storage account and container
+- Azure PostgreSQL database
+- Required Python packages: azure-storage-blob, psycopg2-binary, python-dotenv
+
+### Setup Azure Storage
+
+First, create a `.env` file in the project root:
+
+```
+# Azure Storage configuration
+AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=youraccount;AccountKey=yourkey;EndpointSuffix=core.windows.net
+
+# PostgreSQL database configuration
+PG_HOST=your-server.postgres.database.azure.com
+PG_DATABASE=your_database_name
+PG_USER=your_username
+PG_PASSWORD=your_password
+PG_PORT=5432
+
+# Azure Blob Storage container
+BLOB_CONTAINER=datasheets
+```
+
+### Create Azure Resources
+
+Use the Azure Storage setup script to create necessary Azure resources:
+
+```bash
+poetry run python -m datasheet_downloader.azure_storage_setup \
+  --resource-group "datasheet-resources" \
+  --storage-account "datasheetstore" \
+  --create-folder "voltage_regulator_linear"
+```
+
+This script:
+- Creates a resource group (if it doesn't exist)
+- Creates a storage account (if it doesn't exist)
+- Creates a blob container (if it doesn't exist)
+- Creates the "voltage_regulator_linear" folder structure
+- Outputs the connection string for future use
+
+### Upload Datasheets to Azure
+
+After downloading datasheets, upload them to Azure and store their paths in PostgreSQL:
+
+```bash
+poetry run python -m datasheet_downloader.simple_azure_uploader \
+  /Users/yzheng/Projects/datasheet-downloader/datasheets
+```
+
+When using environment variables (recommended), simply run:
+
+```bash
+poetry run python -m datasheet_downloader.simple_azure_uploader ./datasheets
+```
+
+### Upload Options
+
+```
+usage: simple_azure_uploader [-h] [--connection-string CONNECTION_STRING]
+                            [--pg-host PG_HOST] [--pg-database PG_DATABASE]
+                            [--pg-user PG_USER] [--pg-password PG_PASSWORD]
+                            [--pg-port PG_PORT] [--container CONTAINER]
+                            [--env-file ENV_FILE] [--no-organize]
+                            datasheets_dir
+
+Upload datasheets to Azure Storage and store paths in PostgreSQL
+
+positional arguments:
+  datasheets_dir        Directory containing datasheet PDFs
+
+options:
+  -h, --help            show this help message and exit
+  --connection-string CONNECTION_STRING
+                        Azure Blob Storage connection string
+  --pg-host PG_HOST     PostgreSQL server hostname
+  --pg-database PG_DATABASE
+                        PostgreSQL database name
+  --pg-user PG_USER     PostgreSQL user
+  --pg-password PG_PASSWORD
+                        PostgreSQL password
+  --pg-port PG_PORT     PostgreSQL port
+  --container CONTAINER
+                        Azure Blob container name
+  --env-file ENV_FILE   Path to .env file (default: .env)
 ```
 
 ### Working with a CSV File
